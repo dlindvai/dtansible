@@ -9,4 +9,4 @@
   roles:
   # - awx
   - lamp
-  - mariadb-config
+  - mariadb-conf
