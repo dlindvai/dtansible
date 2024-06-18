@@ -8,3 +8,5 @@
 
   roles:
   - awx
+  - lamp
+  - mariadb-config
