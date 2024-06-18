@@ -7,6 +7,6 @@
   - vars/secrets.yml
 
   roles:
-  - awx
+  # - awx
   - lamp
   - mariadb-config
