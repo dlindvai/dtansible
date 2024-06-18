@@ -72,3 +72,19 @@
 #   tags:
 #   - template
 #   loop: "{{ servers }}"
+
+- name: Check contents of server files
+  slurp:
+    src: "/tmp/{{ item }}.txt"
+    # src: /tmp/galaxy.txt
+  register: servers
+  loop: "{{ servers }}"
+  tags:
+  - debug
+
+- name: Print Information
+  debug:
+    msg: "{{ item.content | b64decode }}"
+  loop: "{{ servers.results }}"
+  tags:
+  - debug
