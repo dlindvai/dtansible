@@ -1,0 +1,10 @@
+---
+- name: Deploy LAMP application
+  hosts:
+  - all
+
+  vars_files:
+  - vars/secrets.yml
+
+  roles:
+  - awx
