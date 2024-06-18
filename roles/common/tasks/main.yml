@@ -76,8 +76,7 @@
 - name: Check contents of server files
   slurp:
     src: "/tmp/{{ item }}.txt"
-    # src: /tmp/galaxy.txt
-  register: servers
+  register: servers_output
   loop: "{{ servers }}"
   tags:
   - debug
@@ -85,6 +84,6 @@
 - name: Print Information
   debug:
     msg: "{{ item.content | b64decode }}"
-  loop: "{{ servers.results }}"
+  loop: "{{ servers_output.results }}"
   tags:
   - debug
