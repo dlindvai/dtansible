@@ -8,5 +8,6 @@
 
   roles:
   # - awx
-  - lamp
-  - mariadb-conf
+  # - lamp
+  # - mariadb-conf
+  - common
