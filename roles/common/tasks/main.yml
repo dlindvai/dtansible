@@ -66,9 +66,9 @@
     - template
   loop: "{{ servers }}"
 
-- name: Check contents of server files
-  debug:
-    msg: "{{ lookup('file', '/tmp/{{ item }}.txt') }}"
-  tags:
-  - template
-  loop: "{{ servers }}"
+# - name: Check contents of server files
+#   debug:
+#     msg: "{{ lookup('file', '/tmp/{{ item }}.txt') }}"
+#   tags:
+#   - template
+#   loop: "{{ servers }}"
