@@ -1,0 +1,50 @@
+---
+# - name: Install EPEL repository GPG key
+#   rpm_key:
+#     key: "https://rpms.remirepo.net/RPM-GPG-KEY-remi{{ item }}"
+#     state: present
+#   loop:
+#   - ''
+#   - 2017
+#   - 2018
+#   - 2019
+#   - 2020
+#   - 2021
+#   - 2022
+#   - 2023
+#   - 2024
+
+- name: "Add php{{ php_version }} EPEL and REMI repositories"
+  dnf:
+    name:
+    - https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+    - http://rpms.remirepo.net/enterprise/remi-release-9.rpm
+    validate_certs: false
+    enablerepo: 'php:remi-8.3'
+    update_cache: yes
+    state: present
+
+- name: Install packages
+  dnf:
+    name:
+    - httpd
+    - mariadb-server
+    - php
+    - php-pear
+    - php-zip
+    - php-mysqlnd
+    - php-intl
+    update_cache: yes
+    state: present
+
+- name: start mariadb
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: start httpd
+  service:
+    name: httpd
+    state: started
+    enabled: yes

@@ -1,0 +1,74 @@
+# tasks file for common
+- name: "Install php{{ php_version }} prerequisities"
+  become: yes
+  apt:
+    name:
+      - ca-certificates
+      - apt-transport-https
+      - software-properties-common
+    update_cache: yes
+    cache_valid_time: 300
+    state: present
+  tags:
+    - packages
+
+- name: "Add php{{ php_version }} repo"
+  become: yes
+  ansible.builtin.apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+  tags:
+    - packages
+
+- name: Install vpackages
+  become: yes
+  apt:
+    name: "{{ base_packages }}"
+    update_cache: yes
+    state: present
+  tags:
+    - packages
+
+- name: Make sure Pictures dir exists
+  file: 
+    path: "{{ pic_dir }}"
+    state: directory
+  tags:
+    - background
+
+- name: Download bg image
+  get_url:
+    url: "{{ bg_img_url }}"
+    dest: "{{ pic_dir }}/{{ dest_pic_filename }}"
+  tags:
+    - background
+
+- name: Install server
+  ansible.builtin.file:
+    name: "/tmp/{{ item }}.txt"
+    state: touch
+  loop: "{{ servers }}"
+  tags:
+    - files
+
+- name: Create cpu.txt
+  template:
+    src: cpu.txt.j2
+    dest: /tmp/cpu.txt
+  tags:
+    - template
+
+- name: "Generate multiple files using template {{ servers }}"
+  template:
+    src: servers.txt.j2
+    dest: "/tmp/{{ item }}.txt"
+  tags:
+    - template
+  loop: "{{ servers }}"
+
+- name: Check contents of server files
+  debug:
+    msg: "{{ lookup('file', '/tmp/{{ item }}.txt') }}"
+  tags:
+  - template
+  loop: "{{ servers }}"

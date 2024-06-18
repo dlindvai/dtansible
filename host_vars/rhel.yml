@@ -1,0 +1,4 @@
+# ansible_port: 12022
+ansible_become_pass: '{{ rhel_become_pass }}'
+ansible_user: ec2-user
+ansible_connection: ssh

@@ -1,0 +1,18 @@
+---
+- name: Playbook
+  hosts:
+  - ubuntu
+  # - rhel
+  # - debian
+  gather_facts: yes
+
+  vars:
+    bg_img_url: https://thumbs.dreamstime.com/z/isolated-headshot-african-american-business-woman-ceo-finance-law-attorney-legal-representative-white-background-167982948.jpg
+    dest_pic_filename: administrative.jpg
+
+  vars_files:
+  - secrets.yml
+
+  roles:
+  - common
+  - office

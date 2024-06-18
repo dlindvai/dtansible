@@ -1,0 +1,17 @@
+---
+- name: Playbook
+  hosts:
+  - ubuntu
+  gather_facts: yes
+
+  vars:
+    bg_img_url: https://thumbs.dreamstime.com/z/colorful-graphs-charts-marketing-research-business-annual-report-background-management-project-budget-planning-financial-68703388.jpg
+    dest_pic_filename: administrative.jpg
+
+  vars_files:
+  - secrets.yml
+
+  roles:
+  - common
+  - office
+  - dev

@@ -1,0 +1,29 @@
+---
+- name: "Install php{{ php_version }} prerequisities"
+  apt:
+    name:
+      - ca-certificates
+      - apt-transport-https
+      - software-properties-common
+    update_cache: yes
+    cache_valid_time: 300
+    state: present
+
+- name: "Add php{{ php_version }} repo"
+  apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+
+- name: Install packages
+  apt:
+    name:
+    - apache2
+    - mariadb-server
+    - mariadb-client
+    - "php{{ php_version }}"
+    - "php{{ php_version }}-mysql"
+    update_cache: yes
+    state: present
+  notify:
+  - start apache2
+  - start mysql

@@ -1,0 +1,3 @@
+---
+# vars file for lamp
+keyring_dir: /usr/share/keyrings

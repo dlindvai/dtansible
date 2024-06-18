@@ -1,0 +1,40 @@
+---
+# tasks file for lamp
+- name: Install packages
+  become: yes
+  tags:
+  - packages
+  block:
+  - include_tasks: packages_ubuntu.yml
+    when: ansible_distribution == 'Ubuntu'
+  - include_tasks: packages_debian.yml
+    when: ansible_distribution == 'Debian'
+  - include_tasks: packages_rhel.yml
+    when: ansible_distribution == 'RedHat'
+
+# - name: "Add php{{ php_version }} repo"
+#   when: ansible_distribution == 'Ubuntu'
+#   apt_repository:
+#     repo: ppa:ondrej/php
+#     state: present
+
+- name: Deploy application
+  become: yes
+  tags:
+  - deploy
+  block:
+  - name: Deploy index.html
+    copy:
+      src: index.html
+      dest: "{{ web_dir }}/index.html"
+      mode: '0644'
+
+  - name: Deploy index.php
+    copy:
+      src: index.php
+      dest: "{{ web_dir }}/index.php"
+      mode: '0644'
+      # content: |
+      #   <?php
+      #   phpinfo();
+      #   ?>

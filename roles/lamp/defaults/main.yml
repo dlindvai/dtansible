@@ -1,0 +1,10 @@
+---
+# defaults file for lamp
+web_dir: /var/www/html
+
+php_version: 8.3
+# base_packages:
+#   - apache2 
+#   - "php{{ php_version }}"
+#   - mariadb-server
+#   - mariadb-client

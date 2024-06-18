@@ -1,0 +1,13 @@
+---
+- name: Deploy LAMP application
+  hosts:
+  - ubuntu
+  - debian
+  - rhel
+  gather_facts: yes
+
+  vars_files:
+  - vars/secrets.yml
+
+  roles:
+  - lamp

@@ -1,0 +1,53 @@
+---
+- name: "Install php{{ php_version }} prerequisities"
+  apt:
+    name:
+      - curl
+      - apt-transport-https
+    update_cache: yes
+    cache_valid_time: 300
+    state: present
+
+- name: "Create {{ keyring_dir }} dir"
+  file:
+    path: "{{ keyring_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Download official PHP GPG key
+  apt_key:
+    url: https://packages.sury.org/php/apt.gpg
+    keyring: "{{ keyring_dir }}/deb.sury.org-php.gpg"
+    state: present
+
+- name: "Assign permissions to {{ keyring_dir }}/deb.sury.org-php.gpg"
+  file:
+    path: "{{ keyring_dir }}/deb.sury.org-php.gpg"
+    mode: a+r
+
+- name: "Add php{{ php_version }} repo"
+  apt_repository:
+    repo: "deb [signed-by={{ keyring_dir }}/deb.sury.org-php.gpg] https://packages.sury.org/php/ {{ ansible_distribution_release }} main"
+    filename: /etc/apt/sources.list.d/php.list
+    state: present
+    update_cache: yes
+
+- name: Install packages
+  tags:
+  - debian
+  apt:
+    name:
+    - apache2
+    - mariadb-server
+    - mariadb-client
+    - "php{{ php_version }}"
+    - "php{{ php_version }}-cli"
+    - "php{{ php_version }}-bz2"
+    - "php{{ php_version }}-curl"
+    - "php{{ php_version }}-mbstring"
+    - "php{{ php_version }}-intl"
+    update_cache: yes
+    state: present
+  notify:
+  - start apache2
+  - start mysql

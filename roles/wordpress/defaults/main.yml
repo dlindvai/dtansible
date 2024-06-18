@@ -1,0 +1,5 @@
+---
+# defaults file for roles/wordpress
+wp_db: wordpress
+wp_user: wordpress
+wp_pass: wordpress123

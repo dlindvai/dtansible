@@ -1,0 +1,89 @@
+---
+# tasks file for dev
+- name: Install Git and Docker prerequisites
+  become: yes
+  apt:
+    name:
+    - git
+    - ca-certificates
+    - curl
+    state: present
+    update_cache: yes
+    cache_valid_time: 300
+  tags:
+  - packages
+
+- name: "Create {{ keyring_dir }} dir"
+  become: yes
+  file:
+    path: "{{ keyring_dir }}"
+    state: directory
+    mode: '0755'
+  tags:
+  - packages
+
+- name: Download official Docker GPG key
+  become: yes
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    keyring: "{{ keyring_dir }}/docker.gpg"
+    state: present
+  tags:
+  - packages
+
+- name: "Assign permissions to {{ keyring_dir }}/docker.gpg"
+  become: yes
+  file:
+    path: "{{ keyring_dir }}/docker.gpg"
+    mode: a+r
+  tags:
+  - packages
+
+- name: Get arch
+  shell: dpkg --print-architecture
+  register: os_arch
+  tags:
+  - packages
+  - debug
+
+- name: Debugging
+  debug:
+    var: os_arch
+  tags:
+  - debug
+
+- name: Add Docker repository to sources list
+  become: yes
+  apt_repository:
+    repo: "deb [arch={{ os_arch.stdout }} signed-by={{ keyring_dir }}/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    filename: docker
+    state: present
+    update_cache: yes
+  tags:
+  - packages
+
+- name: Install Docker packages
+  become: yes
+  apt:
+    name:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+    state: present
+    update_cache: yes
+    cache_valid_time: 300
+  notify: start docker service
+  tags:
+  - packages
+
+- name: Add user to docker group
+  become: yes
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  loop: "{{ docker_users }}"
+  tags:
+    - packages

@@ -1,0 +1,18 @@
+---
+- name: Playbook
+  hosts:
+  - ubuntu
+  gather_facts: yes
+
+  # vars:
+    # servers:
+    #   - srv1
+    #   - srv2
+    #   - srv3
+    # php_version: 8.3
+
+  vars_files:
+  - secrets.yml
+
+  roles:
+  - common

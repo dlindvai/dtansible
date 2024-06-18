@@ -1,0 +1,4 @@
+# ansible_port: 11022
+ansible_become_pass: '{{ ubuntu_become_pass }}'
+ansible_user: ubuntu
+ansible_connection: local

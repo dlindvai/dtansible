@@ -1,0 +1,59 @@
+---
+# tasks file for wordpress
+# - name: Get wordpress checksum
+#   uri:
+#     url: https://wordpress.org/latest.zip.sha1
+#     return_content: true
+#   register: checksum_out
+
+- name: Download wordpress
+  get_url:
+    url: https://wordpress.org/latest.zip
+    dest: /tmp/wordpress.zip
+    # checksum: "sha1:{{ checksum_out.content }}"
+    checksum: sha1:https://wordpress.org/latest.zip.sha1
+
+- name: Install unzip
+  become: yes
+  apt:
+    name: unzip
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Unarchive wordpress
+  ansible.builtin.unarchive:
+    src: /tmp/wordpress.zip
+    dest: /tmp
+    remote_src: yes
+    creates: /tmp/wordpress/index.php
+
+- name: Copy src files
+  become: yes
+  shell: cp -a /tmp/wordpress/. /var/www/html/
+  args: 
+    creates: /var/www/html/wp-config.php
+
+
+- name: Create db
+  become: yes
+  community.mysql.mysql_db:
+    name: "{{ wp_db }}"
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: Create database user 'wordpress'
+  become: yes
+  community.mysql.mysql_user:
+    name: "{{ wp_user }}"
+    password: "{{ wp_pass }}"
+    priv: '{{ wp_db }}.*:ALL'
+    state: present
+    host: localhost
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: Create wp-config.php
+  become: yes
+  template:
+    src: wp-config.php.j2
+    dest: /var/www/html/wp-config.php

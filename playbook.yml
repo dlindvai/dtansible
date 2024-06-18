@@ -1,0 +1,20 @@
+---
+- name: First playbook
+  hosts:
+    - ubuntu
+
+  tasks:
+  # apt-get update && apt-get install -y vim
+    - name: Install vim
+      become: yes
+      apt:
+        name: vim
+        update_cache: yes
+        state: present
+      tags:
+        - install
+
+    - name: Get hostname
+      setup:
+      tags:
+        - hostname
